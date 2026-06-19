@@ -13,7 +13,7 @@ interface VehicleDao {
     suspend fun getVehicleById(id: Int): Vehicle?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(vehicle: Vehicle): Int
+    suspend fun insert(vehicle: Vehicle): Long
 
     @Update
     suspend fun update(vehicle: Vehicle)

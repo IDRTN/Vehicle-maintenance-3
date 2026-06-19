@@ -16,14 +16,11 @@ interface ServiceLogDao {
     suspend fun getLogById(id: Int): ServiceLog?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(log: ServiceLog): Int
+    suspend fun insert(log: ServiceLog): Long
 
     @Update
     suspend fun update(log: ServiceLog)
 
     @Delete
     suspend fun delete(log: ServiceLog)
-
-    @Query("DELETE FROM service_logs WHERE id = :id")
-    suspend fun deleteById(id: Int)
 }

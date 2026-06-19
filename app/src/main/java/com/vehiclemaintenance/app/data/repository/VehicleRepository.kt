@@ -11,13 +11,13 @@ class VehicleRepository(private val db: AppDatabase) {
 
     fun getAllVehicles(): Flow<List<Vehicle>> = vehicleDao.getAllVehicles()
     suspend fun getVehicleById(id: Int): Vehicle? = vehicleDao.getVehicleById(id)
-    suspend fun insertVehicle(vehicle: Vehicle): Int = vehicleDao.insert(vehicle)
+    suspend fun insertVehicle(vehicle: Vehicle): Long = vehicleDao.insert(vehicle)
     suspend fun updateVehicle(vehicle: Vehicle) = vehicleDao.update(vehicle)
     suspend fun deleteVehicle(vehicle: Vehicle) = vehicleDao.delete(vehicle)
     suspend fun deleteVehicleById(id: Int) = vehicleDao.deleteById(id)
 
     fun getLogsForVehicle(vehicleId: Int): Flow<List<ServiceLog>> =
         serviceLogDao.getLogsForVehicle(vehicleId)
-    suspend fun insertLog(log: ServiceLog): Int = serviceLogDao.insert(log)
+    suspend fun insertLog(log: ServiceLog): Long = serviceLogDao.insert(log)
     suspend fun deleteLog(log: ServiceLog) = serviceLogDao.delete(log)
 }
