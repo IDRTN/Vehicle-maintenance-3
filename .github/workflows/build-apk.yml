@@ -18,13 +18,31 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          validate-wrapper-jar: false
+      - name: Set up Android SDK
+        run: |
+          # Download cmdline-tools
+          mkdir -p $HOME/android-sdk
+          curl -sL "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" -o cmdline-tools.zip
+          unzip -q cmdline-tools.zip -d $HOME/android-sdk/
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          mv $HOME/android-sdk/cmdline-tools $HOME/android-sdk/latest 2>/dev/null || true
+          mv $HOME/android-sdk/latest $HOME/android-sdk/cmdline-tools/latest 2>/dev/null || true
+          
+          # Accept licenses
+          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1 || true
+          
+          # Install required SDK components
+          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0" 2>&1 | tail -5
+          
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
 
       - name: Build debug APK
-        run: ./gradlew assembleDebug --no-daemon
+        run: |
+          export ANDROID_HOME=$HOME/android-sdk
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
